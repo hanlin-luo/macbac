@@ -1,5 +1,7 @@
 ## V1
 
+<del>
+
 帮助我编写一个用于 claude code 的 CLAUDE.md 文件。用于指导 claude code 帮助我开发一个名为 【mac-init】的应用程序。
 
 1. 这个程序的主要功能是帮助我自动化初始化我的 macOS 系统的工作环境。
@@ -23,6 +25,10 @@
 6. 这个程序需要能够自动化执行安装和更新操作，尽可能减少手动干预。
 7. 这个程序需要提供一个用户友好的界面，但功能不能过于复杂，因为程序安装和配置可能非常复杂。
 8. 开发环境的另一个重要因素是环境配置，包括系统环境变量，已安装的应用程序的配置等等。这些配置要求能够进行自动化配置，配置的来源需要这个【mac-init】程序自动化查询和生成。
+
+deprecated：（因为 mac 生态下的应用程序无法穷举，所以需要使用 AI 进行分类分析需要配合 web search 实现？）
+
+</del>
 
 ## V2
 
@@ -95,14 +101,27 @@
 - 使用 mypy 进行类型检查。
 - 使用 pytest 进行单元测试。
 
-### deprecated
+## v4
 
-deprecated：（因为 mac 生态下的应用程序无法穷举，所以需要使用 AI 进行分类分析需要配合 web search 实现？）
+请帮助我在 spec-v3.md 的基础上，编写新的 spec-v4.md 文件。
 
-## Prompt
+### 删除功能
 
-请根据设计文档开始进行开发。
-Continue and do not stop until there are absolutely no tasks left.
+1. 删除备份功能中的【3. 开发环境和工具链 - 备份开发工具列表，开发配置等，需要备份配置文件。】
+   - 因为开发环境和工具链的配置文件比较多，备份起来比较麻烦，所以决定不备份开发环境和工具链的配置文件。
+   - 但是需要备份开发环境和工具链的安装列表，因为用户可能会根据需要安装不同的开发环境和工具链。
 
-- If there is no clear next step, suggest next steps but do not continue.
-- If you need any other task, a second opinion or something you can not execute yourself, ask Claude Code MCP. It can do more than you imagine!
+### 改进功能
+
+1. 优化备份数据的存储结构：
+   - 现有生成的 markdown 格式文件继续保留，作为备份报告最后输出即可。
+   - 为了恢复功能，请选择合适的存储方式进行备份数据的存储，考虑到备份数据的大小和恢复速度。
+
+### 新增功能
+
+1. 新增恢复功能
+   - 从备份数据中引导用户开始恢复过程，不同类型的恢复使用不同的恢复命令参数，用户可以根据提示进行操作；
+   - 根据应用程序和工具的分类，分别完成：
+     1. App Store 和沙盒化应用程序 - 通过 mas-cli 恢复
+     2. 包管理软件生态系统 - 通过 Homebrew Brewfile 恢复
+     3. 字体管理 - 恢复用户的自定义字体

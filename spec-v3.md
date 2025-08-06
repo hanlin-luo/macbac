@@ -1,7 +1,3 @@
-好的，这是一个根据您的需求编写的更为详细的 `macbac` (MacOS Backup and Migration) 软件设计文档。
-
----
-
 ## macbac (MacOS Backup and Migration) 软件设计文档
 
 ### 1. 概述
