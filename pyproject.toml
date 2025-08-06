@@ -1,6 +1,6 @@
 [project]
 name = "macbac"
-version = "0.1.0"
+version = "0.2.0"
 description = "MacOS Backup and Migration tool."
 authors = [{ name = "macbac", email = "macbac@example.com" }]
 requires-python = ">=3.13"

@@ -1,102 +1,81 @@
-"""Scanner for development environment configurations."""
+"""Scanner for development environment tools."""
 
-from pathlib import Path
-from typing import Any, Dict
+import subprocess
+from typing import Any, Dict, List
 
 
 class DevEnvScanner:
-    """Scans for development environment configuration files."""
+    """Scans for installed development tools and toolchains."""
 
-    # Common development configuration files to backup
-    CONFIG_FILES = [
-        {
-            "name": ".gitconfig",
-            "path": "~/.gitconfig",
-            "description": "Git global configuration",
-        },
-        {
-            "name": ".zshrc",
-            "path": "~/.zshrc",
-            "description": "Zsh shell configuration",
-        },
-        {
-            "name": ".bashrc",
-            "path": "~/.bashrc",
-            "description": "Bash shell configuration",
-        },
-        {
-            "name": ".bash_profile",
-            "path": "~/.bash_profile",
-            "description": "Bash profile configuration",
-        },
-        {
-            "name": ".vimrc",
-            "path": "~/.vimrc",
-            "description": "Vim editor configuration",
-        },
-        {
-            "name": ".tmux.conf",
-            "path": "~/.tmux.conf",
-            "description": "Tmux terminal multiplexer configuration",
-        },
-        {
-            "name": ".ssh/config",
-            "path": "~/.ssh/config",
-            "description": "SSH client configuration",
-        },
-        {
-            "name": ".aws/config",
-            "path": "~/.aws/config",
-            "description": "AWS CLI configuration",
-        },
-        {
-            "name": ".aws/credentials",
-            "path": "~/.aws/credentials",
-            "description": "AWS CLI credentials (sensitive)",
-        },
-        {"name": ".npmrc", "path": "~/.npmrc", "description": "NPM configuration"},
-        {"name": ".pypirc", "path": "~/.pypirc", "description": "PyPI configuration"},
-        {
-            "name": ".gitignore_global",
-            "path": "~/.gitignore_global",
-            "description": "Global Git ignore patterns",
-        },
+    # Common development tools to check for
+    DEV_TOOLS = [
+        {"name": "git", "command": "git --version", "description": "Git version control"},
+        {"name": "python", "command": "python3 --version", "description": "Python interpreter"},
+        {"name": "node", "command": "node --version", "description": "Node.js runtime"},
+        {"name": "npm", "command": "npm --version", "description": "Node Package Manager"},
+        {"name": "yarn", "command": "yarn --version", "description": "Yarn package manager"},
+        {"name": "go", "command": "go version", "description": "Go programming language"},
+        {"name": "rust", "command": "rustc --version", "description": "Rust programming language"},
+        {"name": "java", "command": "java --version", "description": "Java runtime"},
+        {"name": "docker", "command": "docker --version", "description": "Docker containerization"},
+        {"name": "kubectl", "command": "kubectl version --client", "description": "Kubernetes CLI"},
+        {"name": "terraform", "command": "terraform version", "description": "Terraform infrastructure tool"},
+        {"name": "aws", "command": "aws --version", "description": "AWS CLI"},
+        {"name": "gcloud", "command": "gcloud version", "description": "Google Cloud CLI"},
+        {"name": "az", "command": "az version", "description": "Azure CLI"},
     ]
 
     def scan(self) -> Dict[str, Any]:
-        """Scan for development environment configuration files."""
-        found_configs = []
-        missing_configs = []
+        """Scan for installed development tools."""
+        installed_tools = []
+        missing_tools = []
 
-        for config in self.CONFIG_FILES:
-            config_path = Path(config["path"]).expanduser()
-
-            if config_path.exists() and config_path.is_file():
-                # Get file size
-                file_size = config_path.stat().st_size
-
-                found_configs.append(
-                    {
-                        "name": config["name"],
-                        "path": config["path"],
-                        "description": config["description"],
-                        "size_bytes": file_size,
-                        "exists": True,
-                    }
-                )
+        for tool in self.DEV_TOOLS:
+            tool_info = self._check_tool_installed(tool)
+            if tool_info["installed"]:
+                installed_tools.append(tool_info)
             else:
-                missing_configs.append(
-                    {
-                        "name": config["name"],
-                        "path": config["path"],
-                        "description": config["description"],
-                        "exists": False,
-                    }
-                )
+                missing_tools.append(tool_info)
 
         return {
-            "config_files": found_configs,
-            "missing_files": missing_configs,
-            "found_count": len(found_configs),
-            "total_checked": len(self.CONFIG_FILES),
+            "installed_tools": installed_tools,
+            "missing_tools": missing_tools,
+            "installed_count": len(installed_tools),
+            "missing_count": len(missing_tools),
+            "total_count": len(self.DEV_TOOLS),
         }
+
+    def _check_tool_installed(self, tool: Dict[str, str]) -> Dict[str, Any]:
+        """Check if a development tool is installed."""
+        try:
+            result = subprocess.run(
+                tool["command"].split(),
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            if result.returncode == 0:
+                # Extract version info from output
+                version_output = result.stdout.strip() or result.stderr.strip()
+                return {
+                    "name": tool["name"],
+                    "description": tool["description"],
+                    "installed": True,
+                    "version_info": version_output.split('\n')[0]  # First line only
+                }
+            else:
+                return {
+                    "name": tool["name"],
+                    "description": tool["description"],
+                    "installed": False,
+                    "version_info": None
+                }
+        
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+            return {
+                "name": tool["name"],
+                "description": tool["description"],
+                "installed": False,
+                "version_info": None
+            }

@@ -1,5 +1,6 @@
 """Storage management for backup data."""
 
+import json
 import shutil
 import subprocess
 from datetime import datetime
@@ -18,24 +19,13 @@ class StorageManager:
         self.backup_dir = backup_dir
 
     def store_backup_data(self, backup_data: Dict[str, Any]) -> None:
-        """Store backup data to appropriate directories."""
+        """Store backup data to appropriate directories and generate manifest.json."""
         if not self.backup_dir:
             raise ValueError("Backup directory not set")
 
         # Create subdirectories
-        configs_dir = self.backup_dir / "configs"
         fonts_dir = self.backup_dir / "fonts"
-
-        configs_dir.mkdir(exist_ok=True)
         fonts_dir.mkdir(exist_ok=True)
-
-        # Store configuration files
-        if "dev_env" in backup_data and "config_files" in backup_data["dev_env"]:
-            for config_file in backup_data["dev_env"]["config_files"]:
-                src_path = Path(config_file["path"]).expanduser()
-                if src_path.exists():
-                    dst_path = configs_dir / src_path.name
-                    shutil.copy2(src_path, dst_path)
 
         # Store font files
         if "fonts" in backup_data and "font_files" in backup_data["fonts"]:
@@ -44,6 +34,71 @@ class StorageManager:
                 if src_path.exists():
                     dst_path = fonts_dir / src_path.name
                     shutil.copy2(src_path, dst_path)
+
+        # Generate manifest.json
+        self._generate_manifest(backup_data)
+
+    def _generate_manifest(self, backup_data: Dict[str, Any]) -> None:
+        """Generate machine-readable manifest.json file."""
+        if not self.backup_dir:
+            raise ValueError("Backup directory not set")
+
+        # Get macOS version
+        try:
+            macos_version = subprocess.run(
+                ["sw_vers", "-productVersion"],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+        except subprocess.CalledProcessError:
+            macos_version = "Unknown"
+
+        # Build manifest data
+        manifest = {
+            "backup_info": {
+                "date": datetime.now().isoformat(),
+                "macos_version": macos_version,
+                "macbac_version": "0.2.0"
+            }
+        }
+
+        # App Store apps
+        if "appstore" in backup_data and "apps" in backup_data["appstore"]:
+            manifest["appstore"] = backup_data["appstore"]["apps"]
+        else:
+            manifest["appstore"] = []
+
+        # Homebrew
+        if "homebrew" in backup_data and "brewfile_content" in backup_data["homebrew"]:
+            manifest["homebrew"] = {
+                "brewfile": backup_data["homebrew"]["brewfile_content"]
+            }
+        else:
+            manifest["homebrew"] = {"brewfile": ""}
+
+        # Fonts
+        if "fonts" in backup_data and "font_files" in backup_data["fonts"]:
+            manifest["fonts"] = [font["name"] for font in backup_data["fonts"]["font_files"]]
+        else:
+            manifest["fonts"] = []
+
+        # Manual apps
+        if "manual_apps" in backup_data and "apps" in backup_data["manual_apps"]:
+            manifest["manual_apps"] = backup_data["manual_apps"]["apps"]
+        else:
+            manifest["manual_apps"] = []
+
+        # Dev tools (list installed tools)
+        if "dev_env" in backup_data and "installed_tools" in backup_data["dev_env"]:
+            manifest["dev_tools"] = [tool["name"] for tool in backup_data["dev_env"]["installed_tools"]]
+        else:
+            manifest["dev_tools"] = []
+
+        # Write manifest.json
+        manifest_path = self.backup_dir / "manifest.json"
+        with open(manifest_path, 'w', encoding='utf-8') as f:
+            json.dump(manifest, f, indent=2, ensure_ascii=False)
 
     def generate_inventory(self, backup_data: Dict[str, Any]) -> None:
         """Generate inventory.md file with backup summary."""
@@ -124,18 +179,22 @@ class StorageManager:
 
     def _write_dev_env_section(self, f: Any, dev_env_data: Dict[str, Any]) -> None:
         """Write development environment section."""
-        f.write("## 🛠️ Development Environment & Toolchain\n\n")
+        f.write("## 🛠️ Development Environment & Toolchain (Installed)\n\n")
 
         if "error" in dev_env_data:
             f.write(f"❌ Error: {dev_env_data['error']}\n\n")
             return
 
-        config_files = dev_env_data.get("config_files", [])
-        if config_files:
-            for config in config_files:
-                f.write(f"- `{config['name']}`\n")
+        installed_tools = dev_env_data.get("installed_tools", [])
+        if installed_tools:
+            for tool in installed_tools:
+                version_info = tool.get("version_info", "")
+                if version_info:
+                    f.write(f"- **{tool['name']}** - {tool['description']} ({version_info})\n")
+                else:
+                    f.write(f"- **{tool['name']}** - {tool['description']}\n")
         else:
-            f.write("No development configuration files found.\n")
+            f.write("No development tools detected.\n")
 
         f.write("\n---\n\n")
 
