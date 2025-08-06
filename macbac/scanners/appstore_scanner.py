@@ -54,7 +54,7 @@ class AppStoreScanner:
                         {
                             "id": "unknown",
                             "name": app_path.stem,
-                            "note": "App Store app (mas not installed - ID unavailable)",
+                            "note": "App Store app (mas not installed - ID unavailable)",  # noqa: E501
                         }
                     )
 
