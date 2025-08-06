@@ -1,0 +1,42 @@
+[project]
+name = "macbac"
+version = "0.1.0"
+description = "MacOS Backup and Migration tool."
+authors = [{ name = "macbac", email = "macbac@example.com" }]
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.0",
+    "rich>=13.0",
+]
+
+[project.scripts]
+macbac = "macbac.cli:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "C4", "B"]
+
+[tool.mypy]
+strict = true
+
+[dependency-groups]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

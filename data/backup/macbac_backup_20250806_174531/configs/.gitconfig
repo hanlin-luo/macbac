@@ -1,0 +1,7 @@
+[gitbutler]
+	aiModelProvider = anthropic
+[user]
+	name = hanlin
+	email = hanlin.luo2@gmail.com
+[http]
+	postBuffer = 524288000
