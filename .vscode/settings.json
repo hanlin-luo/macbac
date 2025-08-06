@@ -9,6 +9,7 @@
     "**/.pytest_cache": true,
     "**/.ruff_cache": true,
     "**/.venv": true,
-    "**/.vscode": true
+    "**/.vscode": true,
+    "**/__pycache__": true
   }
 }
