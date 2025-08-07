@@ -5,6 +5,7 @@
 ## 功能特性
 
 ### 备份功能
+
 - 🍎 **App Store 应用备份**: 自动识别并备份从 App Store 安装的应用程序列表
 - 🍺 **Homebrew 生态备份**: 生成完整的 Brewfile，包含所有 taps、formulae 和 casks
 - 🛠️ **开发环境检测**: 检测已安装的开发工具及其版本信息
@@ -13,6 +14,7 @@
 - 📋 **清晰的备份清单**: 生成易读的 Markdown 格式备份报告和机器可读的 manifest.json
 
 ### 恢复功能 🆕
+
 - 🔄 **App Store 应用恢复**: 使用 `mas` 工具自动安装备份的 App Store 应用
 - 🍺 **Homebrew 包恢复**: 使用 Brewfile 一键恢复所有 Homebrew 包和应用
 - ✍️ **字体文件恢复**: 自动恢复备份的自定义字体到系统字体目录
@@ -106,15 +108,15 @@ macbac restore fonts /path/to/backup/directory
     "macbac_version": "0.2.0"
   },
   "appstore": [
-    {"id": "497799835", "name": "Xcode"},
-    {"id": "1444383602", "name": "GoodNotes"}
+    { "id": "497799835", "name": "Xcode" },
+    { "id": "1444383602", "name": "GoodNotes" }
   ],
   "homebrew": {
     "brewfile": "tap \"homebrew/bundle\"\nbrew \"git\"\ncask \"visual-studio-code\""
   },
   "fonts": ["CustomFont.ttf", "AnotherFont.otf"],
   "manual_apps": [
-    {"name": "Sublime Text.app", "path": "/Applications/Sublime Text.app"}
+    { "name": "Sublime Text.app", "path": "/Applications/Sublime Text.app" }
   ],
   "dev_tools": ["git", "python", "node"]
 }
@@ -168,9 +170,10 @@ cask "visual-studio-code"
 为了获得最佳体验，建议安装以下工具：
 
 - **mas**: 用于获取 App Store 应用列表
+
   ```bash
   brew install mas
-````
+  ```
 
 - **Homebrew**: 用于生成 Brewfile
   ```bash
@@ -256,6 +259,7 @@ MIT License
 ## 版本历史
 
 ### v0.2.0 🆕
+
 - ✅ 实现完整的恢复功能
 - ✅ 添加 `manifest.json` 机器可读格式
 - ✅ 支持 App Store 应用、Homebrew 包和字体的一键恢复
@@ -263,6 +267,7 @@ MIT License
 - ✅ 完善的测试覆盖
 
 ### v0.1.0
+
 - ✅ 基础备份功能
 - ✅ 支持 App Store 应用、Homebrew、字体和手动应用的备份
 - ✅ 生成 Markdown 格式的备份报告
