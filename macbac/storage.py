@@ -195,7 +195,7 @@ class StorageManager:
                 version_info = tool.get("version_info", "")
                 if version_info:
                     f.write(
-                        f"- **{tool['name']}** - {tool['description']} ({version_info})\n"
+                        f"- **{tool['name']}** - {tool['description']} ({version_info})\n"  # noqa: E501
                     )
                 else:
                     f.write(f"- **{tool['name']}** - {tool['description']}\n")

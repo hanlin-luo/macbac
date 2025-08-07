@@ -20,7 +20,7 @@ console = Console()
 
 
 class RestoreManager:
-    """Manages the restore process by reading backup data and executing restore operations."""
+    """Manages the restore process by reading backup data and executing restore operations."""  # noqa: E501
 
     def __init__(self, backup_dir: Path):
         self.backup_dir = backup_dir
@@ -52,7 +52,7 @@ class RestoreManager:
             f"[cyan]macOS Version:[/cyan] {backup_info.get('macos_version', 'Unknown')}"
         )
         console.print(
-            f"[cyan]macbac Version:[/cyan] {backup_info.get('macbac_version', 'Unknown')}"
+            f"[cyan]macbac Version:[/cyan] {backup_info.get('macbac_version', 'Unknown')}"  # noqa: E501
         )
         console.print()
 
@@ -74,7 +74,7 @@ class RestoreManager:
 
         console.print()
         console.print(
-            "[yellow]Use 'macbac restore --source <backup_dir> <category>' to restore specific categories.[/yellow]"
+            "[yellow]Use 'macbac restore --source <backup_dir> <category>' to restore specific categories.[/yellow]"  # noqa: E501
         )
 
     def restore_appstore_apps(self) -> None:
@@ -96,7 +96,7 @@ class RestoreManager:
             return
 
         console.print(
-            f"[bold green]🍎 Restoring {len(apps)} App Store applications...[/bold green]"
+            f"[bold green]🍎 Restoring {len(apps)} App Store applications...[/bold green]"  # noqa: E501
         )
 
         with Progress(
@@ -246,5 +246,5 @@ class RestoreManager:
                 progress.advance(task)
 
         console.print(
-            f"[bold green]✍️ Font restoration completed! Copied: {copied_count}, Skipped: {skipped_count}[/bold green]"
+            f"[bold green]✍️ Font restoration completed! Copied: {copied_count}, Skipped: {skipped_count}[/bold green]"  # noqa: E501
         )

@@ -1,7 +1,7 @@
 """Scanner for development environment tools."""
 
 import subprocess
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
 class DevEnvScanner:
@@ -9,19 +9,59 @@ class DevEnvScanner:
 
     # Common development tools to check for
     DEV_TOOLS = [
-        {"name": "git", "command": "git --version", "description": "Git version control"},
-        {"name": "python", "command": "python3 --version", "description": "Python interpreter"},
+        {
+            "name": "git",
+            "command": "git --version",
+            "description": "Git version control",
+        },
+        {
+            "name": "python",
+            "command": "python3 --version",
+            "description": "Python interpreter",
+        },
         {"name": "node", "command": "node --version", "description": "Node.js runtime"},
-        {"name": "npm", "command": "npm --version", "description": "Node Package Manager"},
-        {"name": "yarn", "command": "yarn --version", "description": "Yarn package manager"},
-        {"name": "go", "command": "go version", "description": "Go programming language"},
-        {"name": "rust", "command": "rustc --version", "description": "Rust programming language"},
+        {
+            "name": "npm",
+            "command": "npm --version",
+            "description": "Node Package Manager",
+        },
+        {
+            "name": "yarn",
+            "command": "yarn --version",
+            "description": "Yarn package manager",
+        },
+        {
+            "name": "go",
+            "command": "go version",
+            "description": "Go programming language",
+        },
+        {
+            "name": "rust",
+            "command": "rustc --version",
+            "description": "Rust programming language",
+        },
         {"name": "java", "command": "java --version", "description": "Java runtime"},
-        {"name": "docker", "command": "docker --version", "description": "Docker containerization"},
-        {"name": "kubectl", "command": "kubectl version --client", "description": "Kubernetes CLI"},
-        {"name": "terraform", "command": "terraform version", "description": "Terraform infrastructure tool"},
+        {
+            "name": "docker",
+            "command": "docker --version",
+            "description": "Docker containerization",
+        },
+        {
+            "name": "kubectl",
+            "command": "kubectl version --client",
+            "description": "Kubernetes CLI",
+        },
+        {
+            "name": "terraform",
+            "command": "terraform version",
+            "description": "Terraform infrastructure tool",
+        },
         {"name": "aws", "command": "aws --version", "description": "AWS CLI"},
-        {"name": "gcloud", "command": "gcloud version", "description": "Google Cloud CLI"},
+        {
+            "name": "gcloud",
+            "command": "gcloud version",
+            "description": "Google Cloud CLI",
+        },
         {"name": "az", "command": "az version", "description": "Azure CLI"},
     ]
 
@@ -49,12 +89,9 @@ class DevEnvScanner:
         """Check if a development tool is installed."""
         try:
             result = subprocess.run(
-                tool["command"].split(),
-                capture_output=True,
-                text=True,
-                timeout=5
+                tool["command"].split(), capture_output=True, text=True, timeout=5
             )
-            
+
             if result.returncode == 0:
                 # Extract version info from output
                 version_output = result.stdout.strip() or result.stderr.strip()
@@ -62,20 +99,24 @@ class DevEnvScanner:
                     "name": tool["name"],
                     "description": tool["description"],
                     "installed": True,
-                    "version_info": version_output.split('\n')[0]  # First line only
+                    "version_info": version_output.split("\n")[0],  # First line only
                 }
             else:
                 return {
                     "name": tool["name"],
                     "description": tool["description"],
                     "installed": False,
-                    "version_info": None
+                    "version_info": None,
                 }
-        
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+
+        except (
+            subprocess.CalledProcessError,
+            subprocess.TimeoutExpired,
+            FileNotFoundError,
+        ):
             return {
                 "name": tool["name"],
                 "description": tool["description"],
                 "installed": False,
-                "version_info": None
+                "version_info": None,
             }

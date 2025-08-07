@@ -32,7 +32,7 @@ class TestRestoreManager:
                 {"id": "1444383602", "name": "GoodNotes"},
             ],
             "homebrew": {
-                "brewfile": 'tap "homebrew/bundle"\nbrew "git"\ncask "visual-studio-code"'
+                "brewfile": 'tap "homebrew/bundle"\nbrew "git"\ncask "visual-studio-code"'  # noqa: E501
             },
             "fonts": ["MyCustomFont.ttf", "AnotherFont.otf"],
             "manual_apps": [
