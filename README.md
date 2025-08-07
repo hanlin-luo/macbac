@@ -64,6 +64,8 @@ macbac backup
 
 # 指定自定义输出目录
 macbac backup --output /path/to/backup/directory
+例如：
+macbac backup --output ~/os_backups/app_fonts_backups
 ```
 
 ### 恢复操作 🆕
