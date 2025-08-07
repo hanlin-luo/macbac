@@ -55,11 +55,11 @@ class StorageManager:
             macos_version = "Unknown"
 
         # Build manifest data
-        manifest = {
+        manifest: Dict[str, Any] = {
             "backup_info": {
                 "date": datetime.now().isoformat(),
                 "macos_version": macos_version,
-                "macbac_version": "0.2.0"
+                "macbac_version": "0.2.0",
             }
         }
 
@@ -79,7 +79,9 @@ class StorageManager:
 
         # Fonts
         if "fonts" in backup_data and "font_files" in backup_data["fonts"]:
-            manifest["fonts"] = [font["name"] for font in backup_data["fonts"]["font_files"]]
+            manifest["fonts"] = [
+                font["name"] for font in backup_data["fonts"]["font_files"]
+            ]
         else:
             manifest["fonts"] = []
 
@@ -91,13 +93,15 @@ class StorageManager:
 
         # Dev tools (list installed tools)
         if "dev_env" in backup_data and "installed_tools" in backup_data["dev_env"]:
-            manifest["dev_tools"] = [tool["name"] for tool in backup_data["dev_env"]["installed_tools"]]
+            manifest["dev_tools"] = [
+                tool["name"] for tool in backup_data["dev_env"]["installed_tools"]
+            ]
         else:
             manifest["dev_tools"] = []
 
         # Write manifest.json
         manifest_path = self.backup_dir / "manifest.json"
-        with open(manifest_path, 'w', encoding='utf-8') as f:
+        with open(manifest_path, "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2, ensure_ascii=False)
 
     def generate_inventory(self, backup_data: Dict[str, Any]) -> None:
@@ -190,7 +194,9 @@ class StorageManager:
             for tool in installed_tools:
                 version_info = tool.get("version_info", "")
                 if version_info:
-                    f.write(f"- **{tool['name']}** - {tool['description']} ({version_info})\n")
+                    f.write(
+                        f"- **{tool['name']}** - {tool['description']} ({version_info})\n"
+                    )
                 else:
                     f.write(f"- **{tool['name']}** - {tool['description']}\n")
         else:

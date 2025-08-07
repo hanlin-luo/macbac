@@ -49,7 +49,7 @@ def backup(output: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.group()
+@cli.group(invoke_without_command=True)
 @click.option(
     "-s",
     "--source",
@@ -61,23 +61,25 @@ def restore(ctx: click.Context, source: str) -> None:
     """Restore applications and configurations from a backup."""
     # Expand user path
     source_path = Path(source).expanduser().resolve()
-    
+
     if not source_path.exists():
-        console.print(f"[bold red]❌ Backup directory not found: {source_path}[/bold red]")
+        console.print(
+            f"[bold red]❌ Backup directory not found: {source_path}[/bold red]"
+        )
         raise click.ClickException(f"Backup directory not found: {source_path}")
-    
+
     try:
         # Initialize restore manager
         restore_manager = RestoreManager(source_path)
-        
+
         # Store restore manager in context for subcommands
         ctx.ensure_object(dict)
-        ctx.obj['restore_manager'] = restore_manager
-        
+        ctx.obj["restore_manager"] = restore_manager
+
         # If no subcommand is provided, show backup summary
         if ctx.invoked_subcommand is None:
             restore_manager.show_backup_summary()
-    
+
     except Exception as e:
         console.print(f"[bold red]❌ Failed to load backup: {e}[/bold red]")
         raise click.ClickException(str(e)) from e
@@ -87,7 +89,7 @@ def restore(ctx: click.Context, source: str) -> None:
 @click.pass_context
 def appstore(ctx: click.Context) -> None:
     """Restore App Store applications."""
-    restore_manager = ctx.obj['restore_manager']
+    restore_manager = ctx.obj["restore_manager"]
     try:
         restore_manager.restore_appstore_apps()
     except Exception as e:
@@ -99,7 +101,7 @@ def appstore(ctx: click.Context) -> None:
 @click.pass_context
 def homebrew(ctx: click.Context) -> None:
     """Restore Homebrew packages and casks."""
-    restore_manager = ctx.obj['restore_manager']
+    restore_manager = ctx.obj["restore_manager"]
     try:
         restore_manager.restore_homebrew()
     except Exception as e:
@@ -111,11 +113,23 @@ def homebrew(ctx: click.Context) -> None:
 @click.pass_context
 def fonts(ctx: click.Context) -> None:
     """Restore custom fonts."""
-    restore_manager = ctx.obj['restore_manager']
+    restore_manager = ctx.obj["restore_manager"]
     try:
         restore_manager.restore_fonts()
     except Exception as e:
         console.print(f"[bold red]❌ Font restore failed: {e}[/bold red]")
+        raise click.ClickException(str(e)) from e
+
+
+@restore.command()
+@click.pass_context
+def summary(ctx: click.Context) -> None:
+    """Show backup summary."""
+    restore_manager = ctx.obj["restore_manager"]
+    try:
+        restore_manager.show_backup_summary()
+    except Exception as e:
+        console.print(f"[bold red]❌ Failed to show backup summary: {e}[/bold red]")
         raise click.ClickException(str(e)) from e
 
 
