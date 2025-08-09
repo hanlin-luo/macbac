@@ -72,16 +72,16 @@ macbac backup --output ~/os_backups/app_fonts_backups
 
 ```bash
 # 显示备份摘要
-macbac restore summary /path/to/backup/directory
+macbac restore --source /path/to/backup/directory summary
 
 # 恢复 App Store 应用
-macbac restore appstore /path/to/backup/directory
+macbac restore --source /path/to/backup/directory appstore
 
 # 恢复 Homebrew 包
-macbac restore homebrew /path/to/backup/directory
+macbac restore --source /path/to/backup/directory homebrew
 
 # 恢复自定义字体
-macbac restore fonts /path/to/backup/directory
+macbac restore --source /path/to/backup/directory fonts
 ```
 
 ### 备份输出结构
